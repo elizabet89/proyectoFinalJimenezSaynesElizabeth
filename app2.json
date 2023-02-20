@@ -1,0 +1,56 @@
+[
+  {
+    "id": "0A1",
+    "img": "./img/tennis-01.jpg",
+    "nombre": "Nike",
+    "precio": 1200,
+    "cantidad": 1,
+    "categoria": {
+      "nombre": "tennis",
+      "id": "tennis"
+    }
+  },
+  {
+    "id": "0A2",
+    "img": "./img/tennis-02.jpg",
+    "nombre": "Convers",
+    "precio": 1800,
+    "cantidad": 1,
+    "categoria": {
+      "nombre": "tennis",
+      "id": "tennis"
+    }
+  },
+  {
+    "id": "0A3",
+    "img": "./img/tennis-03.jpg",
+    "nombre": "Adidas",
+    "precio": 1400,
+    "cantidad": 1,
+    "categoria": { "nombre": "tennis", "id": "tennis" }
+  },
+  {
+    "id": "0A4",
+    "img": "./img/tennis-04.jpg",
+    "nombre": "Charly",
+    "precio": 1800,
+    "cantidad": 1,
+    "categoria": { "nombre": "tennis", "id": "tennis" }
+  },
+  {
+    "id": "0A5",
+    "img": "./img/tennis-05.jpg",
+    "nombre": "Skechers",
+    "precio": 1100,
+    "cantidad": 1,
+    "categoria": { "nombre": "tennis", "id": "tennis" }
+  },
+  {
+    "id": "0A6",
+    "img": "./img/tennis-06.jpg",
+    "nombre": "Pumas",
+    "precio": 2400,
+    "cantidad": 1,
+    "categoria": { "nombre": "tennis", "id": "tennis" }
+  }
+]
