@@ -1,181 +1,170 @@
-
-let articulos=document.getElementById("articulos");
+let productos=document.getElementById("productos");
 let template=document.getElementById("template");
 let fragment=document.createDocumentFragment();
+let carrito=document.getElementById("carrito")
+let carritoIcon=document.getElementById("carrito__icon")
+let agregarAlCarritoDeCompras=[];
+let mostrarCarritoDeCompras=[];
+let carritoContador=document.getElementById("carrito__cont");
 let fragment2=document.createDocumentFragment();
 let template2=document.getElementById("template2");
-let carrito=document.getElementById("carrito");
-let vaciarCarrito=document.querySelector(".vaciar__carrito");
-let total=document.querySelector(".total")
-let comprar=document.querySelector(".comprar");
-let carritoVacio=document.querySelector(".carrito__vacio")
-let mostrarCompras=[];
-let carritoDeCompras=[];
-let modal=document.getElementById("section-modal")
-let icon=document.getElementById("icon")
-icon.addEventListener("click",()=>{
-modal.classList.toggle("ocultar__modal") 
+let tableBody=document.getElementById("tbody");
+let total=document.getElementById("total");
+let comprar=document.getElementById("comprar");
+let mensajeCarritoVacio=document.getElementById("carrito__mensaje")
 
-})
+carritoIcon.addEventListener("click",()=>{
+    carrito.classList.toggle("carrito__mostrar");
+});
 
-window.addEventListener("DOMContentLoaded",(e)=>{
-  // carritoDeCompras=JSON.parse(localStorage.getItem("productos"));
 
-  carrito.textContent="";
-              
-  mostrarCompras=JSON.parse(localStorage.getItem("productos"));
-   
 
-  mostrarCompras.forEach((elemento)=>{
 
-  let clone=template2.content.cloneNode(true) 
-      clone.querySelector(".title").textContent=elemento.nombre;
-      clone.querySelector(".cant").textContent=elemento.cantidad;
-      clone.querySelector(".total").textContent=elemento.precio*elemento.cantidad;
-      clone.querySelector(".quitar").dataset.id=elemento.id;
-      clone.querySelector(".agregar").dataset.id=elemento.id;
-
-     fragment2.appendChild(clone)
-    })
-    carrito.appendChild(fragment2);
-    const costo =mostrarCompras.reduce((acc,current)=>acc+current.cantidad*current.precio,0);
-    total.textContent=`Total $`+costo;
-
-    
-    vaciarCarrito.classList.remove("vaciar__carrito");
-    comprar.classList.remove("comprar");
-    carritoVacio.classList.add("vacio")
-
- })
 
 fetch("./app2.json")
 .then((res)=>res.json())
-.then((productos)=>{
+.then((products)=>{
 
-    productos.forEach((item)=>{
-    let clone=template.content.cloneNode(true);
-    clone.querySelector(".card__img").src=item.img;
-    clone.querySelector(".codigo").textContent=item.id;
-    clone.querySelector(".nombre").textContent=item.nombre;
-    clone.querySelector(".precio").textContent=`$`+item.precio;
-    clone.querySelector(".agregar").dataset.id=item.id;
+ //============================================================================
+     products.forEach(item =>{
 
-    fragment.appendChild(clone);
+      let clone=template.content.cloneNode(true);
+          clone.querySelector(".card__img").src=item.img;
+          clone.querySelector(".card__codigo").textContent=item.id;
+          clone.querySelector(".card__title").textContent=item.nombre;
+          clone.querySelector(".card__price").textContent=`$`+item.precio;
+          clone.querySelector(".card__btn-buy").dataset.id=item.id;
 
-   })
-   articulos.appendChild(fragment);
-
-  
-
-//==========================================================
-
-      document.addEventListener("click",(e)=>{
- 
-        if(e.target.matches(".agregar")){
-          agregarAlCarrito(e);
-        }else if(e.target.matches(".quitar")){
-          quitar(e)
-        }else if(e.target.matches(".limpiar")){
-          limpiarCarrito(e)
-        }
-    
-      });
-
-    
-//============================================================
-          
-
-          let pintarCarrito=(e)=>{
+          fragment.appendChild(clone)
       
-              carrito.textContent="";
-              
-              mostrarCompras=JSON.parse(localStorage.getItem("productos"));
-               
-
-              mostrarCompras.forEach((elemento)=>{
- 
-              let clone=template2.content.cloneNode(true) 
-                  clone.querySelector(".title").textContent=elemento.nombre;
-                  clone.querySelector(".cant").textContent=elemento.cantidad;
-                  clone.querySelector(".total").textContent=elemento.precio*elemento.cantidad;
-                  clone.querySelector(".quitar").dataset.id=elemento.id;
-                  clone.querySelector(".agregar").dataset.id=elemento.id;
-          
-                 fragment2.appendChild(clone)
-                })
-                carrito.appendChild(fragment2);
-                const costo =mostrarCompras.reduce((acc,current)=>acc+current.cantidad*current.precio,0);
-                total.textContent=`Total $`+costo;
-
-                
-                vaciarCarrito.classList.remove("vaciar__carrito");
-                comprar.classList.remove("comprar");
-                carritoVacio.classList.add("vacio")
-          
-          
-            }
-   
-//=============================================================
-  
-          let agregarAlCarrito=(e)=>{
-
-             let posicion=productos.findIndex((item)=>item.id === e.target.dataset.id);
-             let indice=carritoDeCompras.findIndex((elem)=>elem.id === e.target.dataset.id )
-             indice === -1 ? carritoDeCompras.push(productos[posicion]):  carritoDeCompras[indice].cantidad+=1;
-             localStorage.setItem("productos",JSON.stringify(carritoDeCompras));
+     });
+     productos.appendChild(fragment);
      
-            pintarCarrito(e);
+//============================================================================
 
-            }
-          let limpiarCarrito=()=>{
-              carrito.textContent="";
-              carritoDeCompras.splice(0,carritoDeCompras.length);
-              total.textContent="";
-              console.log(carritoDeCompras)
-              localStorage.setItem("productos",JSON.stringify(carritoDeCompras));
-             
-              comprar.classList.add("comprar");
-              carritoVacio.classList.remove("vacio")
-              vaciarCarrito.classList.add("vaciar__carrito");
-            }
-          
+document.addEventListener("click",(e)=>{
+  if(e.target.matches(".card__btn-buy")){
+    agregarAlCarrito(e); 
+  } else if(e.target.matches(".btn-delete")) {
+    eliminar(e)
+  } 
+});
+//============================================================================
 
-          let quitar=(e)=>{
+
+let pintarCarrito=()=>{
+    tableBody.textContent=""
+    mostrarCarritoDeCompras=JSON.parse(localStorage.getItem("productos"));
+   
+    carritoContador.textContent=JSON.parse(localStorage.getItem("carritoLenght"));
     
-          carritoDeCompras=carritoDeCompras.filter(item=>{
-              if(item.id===e.target.dataset.id){
-                  if(item.cantidad>0){
-                      item.cantidad--;
-                      if(item.cantidad===0)return;
-                          return item;
-                  }
-                  
-              }else{return item}
-          });
-           
-          localStorage.setItem("productos",JSON.stringify(carritoDeCompras));
-          pintarCarrito(e);
-                if(carritoDeCompras.length ===0){
-                total.textContent=""; 
-                comprar.classList.add("comprar");
-                carritoVacio.classList.remove("vacio")
-                vaciarCarrito.classList.add("vaciar__carrito");
-            
-          }
-    
-            }
+    if(mostrarCarritoDeCompras.length===0){
+        let table=document.getElementById("table");
+        table.classList.add("table__nomostrar");
+        total.classList.add("table__nomostrar");
+        comprar.classList.add("table__nomostrar");
+        mensajeCarritoVacio.classList.remove("table__nomostrar")
+      }else{
+        table.classList.remove("table__nomostrar");
+        total.classList.remove("table__nomostrar");
+        comprar.classList.remove("table__nomostrar");
+        mensajeCarritoVacio.classList.add("table__nomostrar")
+      }
+   
+    // if( mostrarCarritoDeCompras === null){
+    // mostrarCarritoDeCompras=[];
+    // }
+     mostrarCarritoDeCompras.forEach((elemt)=>{
+
+    let clone2=template2.content.cloneNode(true);
+        clone2.querySelector(".codigo").textContent=elemt.id;
+        clone2.querySelector(".nombre").textContent=elemt.nombre;
+        clone2.querySelector(".cantidad").textContent=elemt.cantidad;
+        clone2.querySelector(".costo").textContent=elemt.cantidad*elemt.precio;
+        clone2.querySelector(".delete").innerHTML=`<i  class="fa-regular fa-trash-can btn-delete"></i>`
+        clone2.querySelector(".btn-delete").dataset.id=elemt.id;
+        fragment2.appendChild(clone2);
+        })
+
+        tableBody.appendChild(fragment2);
+
+        let totalApagar=mostrarCarritoDeCompras.reduce((acc,current)=>acc+current.cantidad*current.precio,0);
+       total.textContent=`Total $`+totalApagar;
+      
+
+       if(mostrarCarritoDeCompras.length === 0){
+        let table=document.getElementById("table");
+        table.classList.add("table__mostrar")
+       }
+
+}
+pintarCarrito();
+
+//============================================================================
+
+let contadorCarrito=()=>{
+
+  // let carritoLenght=mostrarCarritoDeCompras.length;
+  // console.log(carritoLenght)
+  // localStorage.setItem("carritoLenght",JSON.stringify(carritoLenght));
+  //  carritoContador.textContent=JSON.parse( localStorage.getItem("carritoLenght"));
+let contadr=agregarAlCarritoDeCompras.length
+  // let contadr=agregarAlCarritoDeCompras.reduce((acc,current)=>acc+current.cantidad,0)
+  carritoContador.textContent=contadr;
+   localStorage.setItem("carritoLenght",JSON.stringify(contadr));
+    //  carritoContador.textContent=JSON.parse( localStorage.getItem("carritoLenght"));
+
+}
+
+//================================================================
+
+let agregarAlCarrito=(e)=>{
+     
+     let posicion=products.findIndex((prod)=>prod.id===e.target.dataset.id);
+         agregarAlCarritoDeCompras=JSON.parse(localStorage.getItem("productos"))
+        if( agregarAlCarritoDeCompras === null){
+        agregarAlCarritoDeCompras=[];
+        };
+
+     let indice=agregarAlCarritoDeCompras.findIndex((item)=>item.id===e.target.dataset.id);
+      
+        indice === -1 ? agregarAlCarritoDeCompras.push(products[posicion]):agregarAlCarritoDeCompras[indice].cantidad+=1;
+        console.log(agregarAlCarritoDeCompras);
+        localStorage.setItem("productos",JSON.stringify(agregarAlCarritoDeCompras))
+
+      
+
         
+        contadorCarrito()
+        pintarCarrito()
+}
 
-           comprar.addEventListener("click",()=>{
-          carrito.textContent="";
-          carritoDeCompras.splice(0,carritoDeCompras.length);
-          total.textContent="";
-          localStorage.setItem("productos",JSON.stringify(carritoDeCompras));
-         
-            comprar.classList.add("comprar");
-            carritoVacio.classList.remove("vacio")
-            vaciarCarrito.classList.add("vaciar__carrito");
-            swal("Su compra se realizo", "Exitosamente", "success");
-           })
-           
-      })
+
+   let eliminar=(e)=>{
+    console.log(agregarAlCarritoDeCompras)
+    agregarAlCarritoDeCompras=JSON.parse(localStorage.getItem("productos"))
+    agregarAlCarritoDeCompras=agregarAlCarritoDeCompras.filter((item)=>{
+
+      if(item.id===e.target.dataset.id){
+        if(item.cantidad>0){
+            item.cantidad--;
+            if(item.cantidad===0)return;
+                return item;
+        }
+        
+    }else{return item}
+ 
+    })
+    localStorage.setItem("productos",JSON.stringify(agregarAlCarritoDeCompras));
+    contadorCarrito();
+    pintarCarrito();
+    console.log(agregarAlCarritoDeCompras)
+   } 
+
+
+
+
+    
+
+})
+
