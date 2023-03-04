@@ -70,7 +70,10 @@ let pintarCarrito=()=>{
         comprar.classList.remove("table__nomostrar");
         mensajeCarritoVacio.classList.add("table__nomostrar")
       }
-  
+   
+    // if( mostrarCarritoDeCompras === null){
+    // mostrarCarritoDeCompras=[];
+    // }
      mostrarCarritoDeCompras.forEach((elemt)=>{
 
     let clone2=template2.content.cloneNode(true);
@@ -101,12 +104,11 @@ pintarCarrito();
 
 let contadorCarrito=()=>{
 
-
-// let contadr=agregarAlCarritoDeCompras.length
+ 
   let contadr=agregarAlCarritoDeCompras.reduce((acc,current)=>acc+current.cantidad,0)
   carritoContador.textContent=contadr;
    localStorage.setItem("carritoLenght",JSON.stringify(contadr));
-
+    
 }
 
 //================================================================
@@ -125,6 +127,9 @@ let agregarAlCarrito=(e)=>{
         console.log(agregarAlCarritoDeCompras);
         localStorage.setItem("productos",JSON.stringify(agregarAlCarritoDeCompras))
 
+      
+
+        
         contadorCarrito()
         pintarCarrito()
 }
@@ -145,11 +150,10 @@ let agregarAlCarrito=(e)=>{
     }else{return item}
  
     })
-
     localStorage.setItem("productos",JSON.stringify(agregarAlCarritoDeCompras));
     contadorCarrito();
     pintarCarrito();
-    
+    console.log(agregarAlCarritoDeCompras)
    } 
 
 
